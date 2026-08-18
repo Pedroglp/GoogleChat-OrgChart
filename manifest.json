@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Google Chat Org Chart",
+  "version": "1.0.0",
+  "description": "Visualiza a árvore organizacional da empresa diretamente no Google Chat.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/chat/*",
+        "https://chat.google.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["org-data.json"],
+      "matches": [
+        "https://mail.google.com/*",
+        "https://chat.google.com/*"
+      ]
+    }
+  ]
+}

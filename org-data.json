@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Carlos Souza",
+    "role": "CTO",
+    "team": "Executive",
+    "managerId": null,
+    "avatarUrl": ""
+  },
+  {
+    "id": "2",
+    "name": "Julia Rolemberg",
+    "role": "DPE @ Data Life Cycle",
+    "team": "Core Engineering",
+    "managerId": "1",
+    "avatarUrl": "https://i.pravatar.cc/150?u=julia"
+  },
+  {
+    "id": "3",
+    "name": "Marcos Almeida",
+    "role": "Frontend Engineer",
+    "team": "Web Platform",
+    "managerId": "1",
+    "avatarUrl": "https://i.pravatar.cc/150?u=marcos"
+  },
+  {
+    "id": "4",
+    "name": "Ana Clara",
+    "role": "Product Manager",
+    "team": "Product",
+    "managerId": null,
+    "avatarUrl": ""
+  },
+  {
+    "id": "5",
+    "name": "Roberto Farias",
+    "role": "Backend Engineer",
+    "team": "Core Engineering",
+    "managerId": "2",
+    "avatarUrl": "https://i.pravatar.cc/150?u=roberto"
+  },
+  {
+    "id": "6",
+    "name": "Luiza Mendes",
+    "role": "UX Designer",
+    "team": "Design",
+    "managerId": "4",
+    "avatarUrl": "https://i.pravatar.cc/150?u=luiza"
+  }
+]
