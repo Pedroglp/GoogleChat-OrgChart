@@ -142,19 +142,39 @@ function getGoogleAvatarFallback(name) {
 }
 
 /**
- * Recursively render the hierarchy tree.
+ * Render the hierarchy tree horizontally.
  */
 function renderTree(parentId, depth, container) {
   // Loose equality to catch null or undefined
   const children = CONFIG.data.filter(emp => emp.managerId == parentId || (parentId === null && emp.managerId === 'null'));
   
+  if (children.length === 0) return;
+  
+  // If it's the root call, setup the wrappers
+  let ul;
+  if (depth === 0) {
+    const treeWrapper = document.createElement('div');
+    treeWrapper.className = 'gchat-tree-wrapper';
+    const treeNav = document.createElement('div');
+    treeNav.className = 'gchat-tree';
+    ul = document.createElement('ul');
+    treeNav.appendChild(ul);
+    treeWrapper.appendChild(treeNav);
+    container.appendChild(treeWrapper);
+  } else {
+    ul = document.createElement('ul');
+    container.appendChild(ul);
+  }
+
   children.forEach(emp => {
-    const card = buildCardElement(emp, depth, true);
-    container.appendChild(card);
+    const li = document.createElement('li');
+    const card = buildCardElement(emp, true);
+    li.appendChild(card);
     
     if (CONFIG.expandedNodes.has(emp.id)) {
-      renderTree(emp.id, depth + 1, container);
+      renderTree(emp.id, depth + 1, li);
     }
+    ul.appendChild(li);
   });
 }
 
@@ -166,21 +186,20 @@ function renderCardsFlat(employees, container) {
     container.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 16px;">No collaborators found.</p>';
     return;
   }
+  const listWrapper = document.createElement('div');
+  listWrapper.className = 'gchat-flat-list';
   employees.forEach(emp => {
-    container.appendChild(buildCardElement(emp, 0, false));
+    listWrapper.appendChild(buildCardElement(emp, false));
   });
+  container.appendChild(listWrapper);
 }
 
 /**
  * Builds a single employee card element.
  */
-function buildCardElement(emp, depth, isTreeMode) {
+function buildCardElement(emp, isTreeMode) {
   const card = document.createElement('div');
   card.className = 'gchat-org-card';
-  
-  if (isTreeMode && depth > 0) {
-    card.style.marginLeft = (depth * 32) + 'px';
-  }
   
   const managerName = getManagerPath(emp.id);
   const fallbackSrc = getGoogleAvatarFallback(emp.name);
@@ -218,9 +237,9 @@ function buildCardElement(emp, depth, isTreeMode) {
       } else {
         CONFIG.expandedNodes.add(emp.id);
       }
-      const container = document.querySelector('.gchat-org-content');
-      container.innerHTML = '';
-      renderTree(null, 0, container);
+      const contentContainer = document.querySelector('.gchat-org-content');
+      contentContainer.innerHTML = '';
+      renderTree(null, 0, contentContainer);
     });
   }
   

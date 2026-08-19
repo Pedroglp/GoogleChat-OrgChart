@@ -97,15 +97,99 @@
   background-color: var(--gchat-org-bg);
 }
 
-/* Content Area - Card List */
+/* Content Area - Card List / Tree Wrapper */
 .gchat-org-content {
   flex: 1;
-  overflow-y: auto;
-  padding: 24px;
+  overflow: auto;
+  background-color: var(--gchat-org-surface);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background-color: var(--gchat-org-surface);
+}
+
+/* Horizontal Tree Layout */
+.gchat-tree-wrapper {
+  padding: 40px;
+  text-align: center;
+  min-width: max-content; /* Ensure container expands for horizontal scroll */
+}
+
+.gchat-tree {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.gchat-tree ul {
+  padding-top: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding-left: 0;
+}
+
+.gchat-tree li {
+  text-align: center;
+  list-style-type: none;
+  position: relative;
+  padding: 20px 8px 0 8px;
+}
+
+/* Connecting lines */
+.gchat-tree li::before, .gchat-tree li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 2px solid var(--gchat-org-border);
+  width: 50%;
+  height: 20px;
+}
+
+.gchat-tree li::after {
+  right: auto;
+  left: 50%;
+  border-left: 2px solid var(--gchat-org-border);
+}
+
+.gchat-tree li:only-child::after, .gchat-tree li:only-child::before {
+  display: none;
+}
+
+.gchat-tree li:only-child {
+  padding-top: 0;
+}
+
+.gchat-tree li:first-child::before, .gchat-tree li:last-child::after {
+  border: 0 none;
+}
+
+.gchat-tree li:last-child::before {
+  border-right: 2px solid var(--gchat-org-border);
+  border-radius: 0 4px 0 0;
+}
+
+.gchat-tree li:first-child::after {
+  border-radius: 4px 0 0 0;
+}
+
+/* Downward line from parent */
+.gchat-tree ul ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 1px);
+  border-left: 2px solid var(--gchat-org-border);
+  width: 0;
+  height: 20px;
+}
+
+/* Flat List (for Search Results) */
+.gchat-flat-list {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  align-content: flex-start;
 }
 
 /* Card Style */
@@ -120,6 +204,17 @@
   box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
   transition: box-shadow 0.2s, background-color 0.2s;
   cursor: pointer;
+  text-align: left;
+  position: relative;
+  z-index: 2; /* keep above lines */
+  width: 260px; /* fixed width for tree consistency */
+  margin: 0 auto;
+}
+
+/* Flat list overrides width */
+.gchat-flat-list .gchat-org-card {
+  width: auto;
+  margin: 0;
 }
 
 .gchat-org-card:hover {
