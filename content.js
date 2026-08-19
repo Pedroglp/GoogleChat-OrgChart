@@ -98,6 +98,11 @@ function createOverlay() {
   overlayElement.appendChild(header);
   overlayElement.appendChild(content);
   
+  // Prevent clicks inside our overlay from bubbling up and triggering Google Chat navigation
+  overlayElement.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+  
   document.body.appendChild(overlayElement);
   
   // Initial render (Tree View)
@@ -231,7 +236,10 @@ function buildCardElement(emp, isTreeMode) {
   `;
   
   if (isTreeMode && hasChildren) {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
       if (isExpanded) {
         CONFIG.expandedNodes.delete(emp.id);
       } else {
