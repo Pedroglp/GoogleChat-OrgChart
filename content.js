@@ -10,11 +10,12 @@ const CONFIG = {
     visible: 'visible',
     active: 'active'
   },
-  // Data State
+    // Data State
   data: [],
   dataMap: new Map(), // ID -> Employee
   lastUpdated: '',
-  expandedNodes: new Set()
+  expandedNodes: new Set(),
+  currentSearchQuery: ''
 };
 
 let overlayElement = null;
@@ -111,9 +112,11 @@ function createOverlay() {
   // Real-time Search event listener
   searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
+    CONFIG.currentSearchQuery = query;
     content.innerHTML = '';
     
     if (!query) {
+      CONFIG.expandedNodes.clear(); // Collapse all when search is cleared
       renderTree(null, 0, content);
       return;
     }
@@ -123,7 +126,25 @@ function createOverlay() {
       emp.role.toLowerCase().includes(query) ||
       emp.team.toLowerCase().includes(query)
     );
-    renderCardsFlat(filtered, content);
+    
+    // Auto-expand paths to matches
+    CONFIG.expandedNodes.clear();
+    filtered.forEach(emp => {
+      let currentId = emp.managerId;
+      while (currentId && currentId !== 'null') {
+        CONFIG.expandedNodes.add(currentId);
+        const manager = CONFIG.dataMap.get(currentId);
+        currentId = manager ? manager.managerId : null;
+      }
+    });
+    
+    // Check if there are no matches
+    if (filtered.length === 0) {
+      content.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 24px; text-align: center;">No collaborators found.</p>';
+      return;
+    }
+    
+    renderTree(null, 0, content);
   });
 }
 
@@ -184,27 +205,22 @@ function renderTree(parentId, depth, container) {
 }
 
 /**
- * Render a flat list of cards (used for search results).
- */
-function renderCardsFlat(employees, container) {
-  if (employees.length === 0) {
-    container.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 16px;">No collaborators found.</p>';
-    return;
-  }
-  const listWrapper = document.createElement('div');
-  listWrapper.className = 'gchat-flat-list';
-  employees.forEach(emp => {
-    listWrapper.appendChild(buildCardElement(emp, false));
-  });
-  container.appendChild(listWrapper);
-}
-
-/**
  * Builds a single employee card element.
  */
 function buildCardElement(emp, isTreeMode) {
   const card = document.createElement('div');
   card.className = 'gchat-org-card';
+  
+  // Check if this card matches the current search query
+  if (CONFIG.currentSearchQuery) {
+    const query = CONFIG.currentSearchQuery;
+    const isMatch = emp.name.toLowerCase().includes(query) ||
+                    emp.role.toLowerCase().includes(query) ||
+                    emp.team.toLowerCase().includes(query);
+    if (isMatch) {
+      card.classList.add('match');
+    }
+  }
   
   const managerName = getManagerPath(emp.id);
   const fallbackSrc = getGoogleAvatarFallback(emp.name);

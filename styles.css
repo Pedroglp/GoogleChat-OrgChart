@@ -222,6 +222,11 @@
   background-color: var(--gchat-org-surface);
 }
 
+.gchat-org-card.match {
+  border: 2px solid #0b57d0; /* M3 Primary Blue */
+  background-color: #f8f9fa;
+}
+
 /* Tree Toggle Icon */
 .gchat-org-toggle {
   position: absolute;
