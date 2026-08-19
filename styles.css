@@ -135,7 +135,6 @@
   justify-content: center;
   margin: 0;
   padding-left: 0;
-  animation: treeFadeIn 0.3s ease-out forwards;
 }
 
 .gchat-tree li {
@@ -143,6 +142,8 @@
   list-style-type: none;
   position: relative;
   padding: 20px 8px 0 8px;
+  opacity: 0; /* Start hidden for animation */
+  animation: treeFadeIn 0.3s ease-out forwards;
 }
 
 /* Connecting lines */

@@ -203,8 +203,11 @@ function renderTree(parentId, depth, container) {
     container.appendChild(ul);
   }
 
-  children.forEach(emp => {
+  children.forEach((emp, index) => {
     const li = document.createElement('li');
+    // Staggered animation delay: 80ms per card from left to right
+    li.style.animationDelay = `${index * 0.08}s`;
+    
     const card = buildCardElement(emp, true);
     li.appendChild(card);
     
@@ -213,6 +216,26 @@ function renderTree(parentId, depth, container) {
     }
     ul.appendChild(li);
   });
+}
+
+/**
+ * Render a flat list of cards (used for search results).
+ */
+function renderCardsFlat(employees, container) {
+  if (employees.length === 0) {
+    container.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 16px;">No collaborators found.</p>';
+    return;
+  }
+  const listWrapper = document.createElement('div');
+  listWrapper.className = 'gchat-flat-list';
+  employees.forEach((emp, index) => {
+    const card = buildCardElement(emp, false);
+    card.style.opacity = '0';
+    card.style.animation = `treeFadeIn 0.3s ease-out forwards`;
+    card.style.animationDelay = `${index * 0.05}s`; // Slightly faster stagger for flat list
+    listWrapper.appendChild(card);
+  });
+  container.appendChild(listWrapper);
 }
 
 /**
