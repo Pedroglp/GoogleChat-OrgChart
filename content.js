@@ -181,11 +181,11 @@ function getGoogleAvatarFallback(name) {
 /**
  * Render the hierarchy tree horizontally.
  */
-function renderTree(parentId, depth, container) {
+function renderTree(parentId, depth, container, animateImmediately = true) {
   // Loose equality to catch null or undefined
   const children = CONFIG.data.filter(emp => emp.managerId == parentId || (parentId === null && emp.managerId === 'null'));
   
-  if (children.length === 0) return;
+  if (children.length === 0) return null;
   
   // If it's the root call, setup the wrappers
   let ul;
@@ -205,17 +205,24 @@ function renderTree(parentId, depth, container) {
 
   children.forEach((emp, index) => {
     const li = document.createElement('li');
-    // Staggered animation delay: 80ms per card from left to right
-    li.style.animationDelay = `${index * 0.08}s`;
+    if (animateImmediately) {
+      // Staggered animation delay: 80ms per card from left to right
+      li.style.animationDelay = `${index * 0.08}s`;
+      li.style.animation = 'treeFadeIn 0.3s ease-out forwards';
+    } else {
+      li.style.opacity = '0'; // Keep hidden until space animation finishes
+    }
     
     const card = buildCardElement(emp, true, depth);
     li.appendChild(card);
     
     if (CONFIG.expandedNodes.has(emp.id)) {
-      renderTree(emp.id, depth + 1, li);
+      renderTree(emp.id, depth + 1, li, animateImmediately);
     }
     ul.appendChild(li);
   });
+  
+  return ul;
 }
 
 /**
@@ -328,9 +335,31 @@ function buildCardElement(emp, isTreeMode, depth = 0) {
           ul.style.animationDelay = `${maxDelay}s`;
           
           setTimeout(() => {
-            CONFIG.expandedNodes.delete(emp.id);
-            ul.remove();
-            updateToggleIcon(card, false);
+            // Fade out finished, now close the space smoothly
+            const currentWidth = ul.offsetWidth;
+            ul.style.animation = 'none'; // clear simpleFadeOut so opacity is 0 but we can transition width
+            ul.style.opacity = '0';
+            ul.style.display = 'flex';
+            ul.style.flexWrap = 'nowrap';
+            ul.style.overflow = 'hidden';
+            ul.style.width = currentWidth + 'px';
+            
+            // Prevent children from crushing
+            Array.from(ul.children).forEach(childLi => {
+               childLi.style.flexShrink = '0';
+            });
+            
+            // Force reflow
+            void ul.offsetWidth;
+            
+            ul.style.transition = 'width 0.3s ease-in-out';
+            ul.style.width = '0px';
+            
+            setTimeout(() => {
+              CONFIG.expandedNodes.delete(emp.id);
+              ul.remove();
+              updateToggleIcon(card, false);
+            }, 300);
           }, (maxDelay + 0.3) * 1000);
         } else {
           CONFIG.expandedNodes.delete(emp.id);
@@ -338,8 +367,54 @@ function buildCardElement(emp, isTreeMode, depth = 0) {
         }
       } else {
         CONFIG.expandedNodes.add(emp.id);
-        renderTree(emp.id, depth + 1, li);
+        
+        // Render tree but don't animate yet
+        const ul = renderTree(emp.id, depth + 1, li, false);
         updateToggleIcon(card, true);
+        
+        if (ul) {
+          // Measure the required space
+          const originalWidth = ul.offsetWidth;
+          
+          ul.style.width = '0px';
+          ul.style.overflow = 'hidden';
+          ul.style.opacity = '0';
+          ul.style.display = 'flex';
+          ul.style.flexWrap = 'nowrap';
+          
+          // Prevent children from crushing
+          Array.from(ul.children).forEach(childLi => {
+             childLi.style.flexShrink = '0';
+          });
+          
+          // Force reflow
+          void ul.offsetWidth;
+          
+          // Animate the space opening
+          ul.style.transition = 'width 0.3s ease-in-out';
+          ul.style.width = originalWidth + 'px';
+          
+          setTimeout(() => {
+            // Space is open, clean up styles
+            ul.style.transition = 'none';
+            ul.style.width = 'auto';
+            ul.style.overflow = '';
+            ul.style.opacity = '1';
+            ul.style.display = 'flex';
+            ul.style.flexWrap = '';
+            
+            Array.from(ul.children).forEach(childLi => {
+               childLi.style.flexShrink = '';
+            });
+            
+            // Trigger staggered fade-in
+            const lis = Array.from(ul.children).filter(c => c.tagName === 'LI');
+            lis.forEach((liItem, index) => {
+              liItem.style.animationDelay = `${index * 0.08}s`;
+              liItem.style.animation = 'treeFadeIn 0.3s ease-out forwards';
+            });
+          }, 300);
+        }
       }
     });
   }

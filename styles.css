@@ -148,7 +148,6 @@
   position: relative;
   padding: 20px 8px 0 8px;
   opacity: 0; /* Start hidden for animation */
-  animation: treeFadeIn 0.3s ease-out forwards;
 }
 
 /* Connecting lines */
