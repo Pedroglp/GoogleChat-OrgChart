@@ -128,6 +128,11 @@
   to { opacity: 0; transform: translateY(-10px); }
 }
 
+@keyframes simpleFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 .gchat-tree ul {
   padding-top: 20px;
   position: relative;

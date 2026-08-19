@@ -315,12 +315,16 @@ function buildCardElement(emp, isTreeMode, depth = 0) {
           lis.forEach((liItem, index) => {
             // Right to left: last item has 0 delay, first item has max delay
             const delay = (lis.length - 1 - index) * 0.08;
+            // Lock current state so it doesn't pop to opacity: 0 during the delay
+            liItem.style.opacity = '1';
+            liItem.style.transform = 'translateY(0)';
             liItem.style.animation = `treeFadeOut 0.3s ease-out forwards`;
             liItem.style.animationDelay = `${delay}s`;
           });
           
           // Fade out the ul itself (to fade out the top connecting line) synchronized with the last card
-          ul.style.animation = `treeFadeOut 0.3s ease-out forwards`;
+          // Use simpleFadeOut to avoid translating already translated children
+          ul.style.animation = `simpleFadeOut 0.3s ease-out forwards`;
           ul.style.animationDelay = `${maxDelay}s`;
           
           setTimeout(() => {
