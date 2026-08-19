@@ -208,7 +208,7 @@ function renderTree(parentId, depth, container) {
     // Staggered animation delay: 80ms per card from left to right
     li.style.animationDelay = `${index * 0.08}s`;
     
-    const card = buildCardElement(emp, true);
+    const card = buildCardElement(emp, true, depth);
     li.appendChild(card);
     
     if (CONFIG.expandedNodes.has(emp.id)) {
@@ -229,7 +229,7 @@ function renderCardsFlat(employees, container) {
   const listWrapper = document.createElement('div');
   listWrapper.className = 'gchat-flat-list';
   employees.forEach((emp, index) => {
-    const card = buildCardElement(emp, false);
+    const card = buildCardElement(emp, false, 0);
     card.style.opacity = '0';
     card.style.animation = `treeFadeIn 0.3s ease-out forwards`;
     card.style.animationDelay = `${index * 0.05}s`; // Slightly faster stagger for flat list
@@ -239,9 +239,21 @@ function renderCardsFlat(employees, container) {
 }
 
 /**
+ * Helper to update the toggle icon SVG
+ */
+function updateToggleIcon(card, isExpanded) {
+  const toggle = card.querySelector('.gchat-org-toggle');
+  if (toggle) {
+    toggle.innerHTML = isExpanded 
+      ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>`
+      : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>`;
+  }
+}
+
+/**
  * Builds a single employee card element.
  */
-function buildCardElement(emp, isTreeMode) {
+function buildCardElement(emp, isTreeMode, depth = 0) {
   const card = document.createElement('div');
   card.className = 'gchat-org-card';
   
@@ -290,28 +302,27 @@ function buildCardElement(emp, isTreeMode) {
       e.preventDefault();
       e.stopPropagation();
       
-      if (isExpanded) {
+      const isCurrentlyExpanded = CONFIG.expandedNodes.has(emp.id);
+      const li = card.parentElement;
+      
+      if (isCurrentlyExpanded) {
         // Find the child UL and fade it out
         const ul = card.nextElementSibling;
         if (ul) {
           ul.style.animation = 'treeFadeOut 0.2s ease-in forwards';
           setTimeout(() => {
             CONFIG.expandedNodes.delete(emp.id);
-            const contentContainer = document.querySelector('.gchat-org-content');
-            contentContainer.innerHTML = '';
-            renderTree(null, 0, contentContainer);
+            ul.remove();
+            updateToggleIcon(card, false);
           }, 180);
         } else {
           CONFIG.expandedNodes.delete(emp.id);
-          const contentContainer = document.querySelector('.gchat-org-content');
-          contentContainer.innerHTML = '';
-          renderTree(null, 0, contentContainer);
+          updateToggleIcon(card, false);
         }
       } else {
         CONFIG.expandedNodes.add(emp.id);
-        const contentContainer = document.querySelector('.gchat-org-content');
-        contentContainer.innerHTML = '';
-        renderTree(null, 0, contentContainer);
+        renderTree(emp.id, depth + 1, li);
+        updateToggleIcon(card, true);
       }
     });
   }
