@@ -309,12 +309,25 @@ function buildCardElement(emp, isTreeMode, depth = 0) {
         // Find the child UL and fade it out
         const ul = card.nextElementSibling;
         if (ul) {
-          ul.style.animation = 'treeFadeOut 0.2s ease-in forwards';
+          const lis = Array.from(ul.children).filter(child => child.tagName === 'LI');
+          const maxDelay = Math.max(0, lis.length - 1) * 0.08;
+          
+          lis.forEach((liItem, index) => {
+            // Right to left: last item has 0 delay, first item has max delay
+            const delay = (lis.length - 1 - index) * 0.08;
+            liItem.style.animation = `treeFadeOut 0.2s ease-in forwards`;
+            liItem.style.animationDelay = `${delay}s`;
+          });
+          
+          // Fade out the ul itself (to fade out the top connecting line) synchronized with the last card
+          ul.style.animation = `treeFadeOut 0.2s ease-in forwards`;
+          ul.style.animationDelay = `${maxDelay}s`;
+          
           setTimeout(() => {
             CONFIG.expandedNodes.delete(emp.id);
             ul.remove();
             updateToggleIcon(card, false);
-          }, 180);
+          }, (maxDelay + 0.2) * 1000);
         } else {
           CONFIG.expandedNodes.delete(emp.id);
           updateToggleIcon(card, false);
