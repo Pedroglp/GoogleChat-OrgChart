@@ -110,41 +110,52 @@ function createOverlay() {
   renderTree(null, 0, content);
   
   // Real-time Search event listener
+  let searchTimeout;
   searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase().trim();
     CONFIG.currentSearchQuery = query;
-    content.innerHTML = '';
     
-    if (!query) {
-      CONFIG.expandedNodes.clear(); // Collapse all when search is cleared
-      renderTree(null, 0, content);
-      return;
+    // Fade out current tree
+    const currentTree = content.querySelector('.gchat-tree-wrapper, .gchat-flat-list');
+    if (currentTree) {
+      currentTree.style.animation = 'treeFadeOut 0.2s ease-in forwards';
     }
     
-    const filtered = CONFIG.data.filter(emp => 
-      emp.name.toLowerCase().includes(query) ||
-      emp.role.toLowerCase().includes(query) ||
-      emp.team.toLowerCase().includes(query)
-    );
-    
-    // Auto-expand paths to matches
-    CONFIG.expandedNodes.clear();
-    filtered.forEach(emp => {
-      let currentId = emp.managerId;
-      while (currentId && currentId !== 'null') {
-        CONFIG.expandedNodes.add(currentId);
-        const manager = CONFIG.dataMap.get(currentId);
-        currentId = manager ? manager.managerId : null;
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      content.innerHTML = '';
+      
+      if (!query) {
+        CONFIG.expandedNodes.clear(); // Collapse all when search is cleared
+        renderTree(null, 0, content);
+        return;
       }
-    });
-    
-    // Check if there are no matches
-    if (filtered.length === 0) {
-      content.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 24px; text-align: center;">No collaborators found.</p>';
-      return;
-    }
-    
-    renderTree(null, 0, content);
+      
+      const filtered = CONFIG.data.filter(emp => 
+        emp.name.toLowerCase().includes(query) ||
+        emp.role.toLowerCase().includes(query) ||
+        emp.team.toLowerCase().includes(query)
+      );
+      
+      // Auto-expand paths to matches
+      CONFIG.expandedNodes.clear();
+      filtered.forEach(emp => {
+        let currentId = emp.managerId;
+        while (currentId && currentId !== 'null') {
+          CONFIG.expandedNodes.add(currentId);
+          const manager = CONFIG.dataMap.get(currentId);
+          currentId = manager ? manager.managerId : null;
+        }
+      });
+      
+      // Check if there are no matches
+      if (filtered.length === 0) {
+        content.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 24px; text-align: center;">No collaborators found.</p>';
+        return;
+      }
+      
+      renderTree(null, 0, content);
+    }, 180); // Wait for fade out to finish
   });
 }
 
@@ -257,13 +268,28 @@ function buildCardElement(emp, isTreeMode) {
       e.stopPropagation();
       
       if (isExpanded) {
-        CONFIG.expandedNodes.delete(emp.id);
+        // Find the child UL and fade it out
+        const ul = card.nextElementSibling;
+        if (ul) {
+          ul.style.animation = 'treeFadeOut 0.2s ease-in forwards';
+          setTimeout(() => {
+            CONFIG.expandedNodes.delete(emp.id);
+            const contentContainer = document.querySelector('.gchat-org-content');
+            contentContainer.innerHTML = '';
+            renderTree(null, 0, contentContainer);
+          }, 180);
+        } else {
+          CONFIG.expandedNodes.delete(emp.id);
+          const contentContainer = document.querySelector('.gchat-org-content');
+          contentContainer.innerHTML = '';
+          renderTree(null, 0, contentContainer);
+        }
       } else {
         CONFIG.expandedNodes.add(emp.id);
+        const contentContainer = document.querySelector('.gchat-org-content');
+        contentContainer.innerHTML = '';
+        renderTree(null, 0, contentContainer);
       }
-      const contentContainer = document.querySelector('.gchat-org-content');
-      contentContainer.innerHTML = '';
-      renderTree(null, 0, contentContainer);
     });
   }
   
