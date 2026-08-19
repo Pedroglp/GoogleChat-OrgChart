@@ -97,16 +97,15 @@
   background-color: var(--gchat-org-bg);
 }
 
-/* Content Area - Card Grid */
+/* Content Area - Card List */
 .gchat-org-content {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   background-color: var(--gchat-org-surface);
-  align-content: flex-start;
 }
 
 /* Card Style */
@@ -119,17 +118,39 @@
   flex-direction: column;
   gap: 12px;
   box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, background-color 0.2s;
+  cursor: pointer;
 }
 
 .gchat-org-card:hover {
   box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+  background-color: var(--gchat-org-surface);
+}
+
+/* Tree Toggle Icon */
+.gchat-org-toggle {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--gchat-org-text-secondary);
+  transition: background-color 0.2s;
+}
+
+.gchat-org-toggle:hover {
+  background-color: rgba(60,64,67,0.08);
 }
 
 .gchat-org-card-header {
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
 }
 
 .gchat-org-avatar {

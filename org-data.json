@@ -1,50 +1,525 @@
-[
-  {
-    "id": "1",
-    "name": "Carlos Souza",
-    "role": "CTO",
-    "team": "Executive",
-    "managerId": null,
-    "avatarUrl": ""
-  },
-  {
-    "id": "2",
-    "name": "Julia Rolemberg",
-    "role": "DPE @ Data Life Cycle",
-    "team": "Core Engineering",
-    "managerId": "1",
-    "avatarUrl": "https://i.pravatar.cc/150?u=julia"
-  },
-  {
-    "id": "3",
-    "name": "Marcos Almeida",
-    "role": "Frontend Engineer",
-    "team": "Web Platform",
-    "managerId": "1",
-    "avatarUrl": "https://i.pravatar.cc/150?u=marcos"
-  },
-  {
-    "id": "4",
-    "name": "Ana Clara",
-    "role": "Product Manager",
-    "team": "Product",
-    "managerId": null,
-    "avatarUrl": ""
-  },
-  {
-    "id": "5",
-    "name": "Roberto Farias",
-    "role": "Backend Engineer",
-    "team": "Core Engineering",
-    "managerId": "2",
-    "avatarUrl": "https://i.pravatar.cc/150?u=roberto"
-  },
-  {
-    "id": "6",
-    "name": "Luiza Mendes",
-    "role": "UX Designer",
-    "team": "Design",
-    "managerId": "4",
-    "avatarUrl": "https://i.pravatar.cc/150?u=luiza"
-  }
-]
+{
+  "lastUpdated": "19/08/2026, 15:51",
+  "employees": [
+    {
+      "id": "1",
+      "name": "Rafael Silva",
+      "role": "CEO",
+      "team": "Executive",
+      "managerId": null,
+      "avatarUrl": ""
+    },
+    {
+      "id": "2",
+      "name": "Carolina Gomes",
+      "role": "Director of Engineering",
+      "team": "Executive",
+      "managerId": "1",
+      "avatarUrl": ""
+    },
+    {
+      "id": "3",
+      "name": "Julia Costa",
+      "role": "Director of Product",
+      "team": "Executive",
+      "managerId": "1",
+      "avatarUrl": ""
+    },
+    {
+      "id": "4",
+      "name": "Leticia Lima",
+      "role": "Director of Operations",
+      "team": "Executive",
+      "managerId": "1",
+      "avatarUrl": ""
+    },
+    {
+      "id": "5",
+      "name": "Felipe Pereira",
+      "role": "Director of Sales",
+      "team": "Executive",
+      "managerId": "1",
+      "avatarUrl": ""
+    },
+    {
+      "id": "6",
+      "name": "Lucas Pereira",
+      "role": "Manager",
+      "team": "Marketing",
+      "managerId": "2",
+      "avatarUrl": ""
+    },
+    {
+      "id": "7",
+      "name": "Mariana Rocha",
+      "role": "Manager",
+      "team": "Operations",
+      "managerId": "2",
+      "avatarUrl": ""
+    },
+    {
+      "id": "8",
+      "name": "Marcos Almeida",
+      "role": "Manager",
+      "team": "HR",
+      "managerId": "2",
+      "avatarUrl": ""
+    },
+    {
+      "id": "9",
+      "name": "Fernanda Silva",
+      "role": "Manager",
+      "team": "Security",
+      "managerId": "3",
+      "avatarUrl": ""
+    },
+    {
+      "id": "10",
+      "name": "Felipe Santos",
+      "role": "Manager",
+      "team": "Sales",
+      "managerId": "3",
+      "avatarUrl": ""
+    },
+    {
+      "id": "11",
+      "name": "Leticia Souza",
+      "role": "Manager",
+      "team": "HR",
+      "managerId": "3",
+      "avatarUrl": ""
+    },
+    {
+      "id": "12",
+      "name": "Rodrigo Carvalho",
+      "role": "Manager",
+      "team": "Data Science",
+      "managerId": "4",
+      "avatarUrl": ""
+    },
+    {
+      "id": "13",
+      "name": "Mateus Silva",
+      "role": "Manager",
+      "team": "Core Engineering",
+      "managerId": "4",
+      "avatarUrl": ""
+    },
+    {
+      "id": "14",
+      "name": "Bruno Mendes",
+      "role": "Manager",
+      "team": "HR",
+      "managerId": "4",
+      "avatarUrl": ""
+    },
+    {
+      "id": "15",
+      "name": "Gabriel Nunes",
+      "role": "Manager",
+      "team": "Finance",
+      "managerId": "5",
+      "avatarUrl": ""
+    },
+    {
+      "id": "16",
+      "name": "Rafael Farias",
+      "role": "Manager",
+      "team": "Core Engineering",
+      "managerId": "5",
+      "avatarUrl": ""
+    },
+    {
+      "id": "17",
+      "name": "Carlos Santos",
+      "role": "Manager",
+      "team": "Finance",
+      "managerId": "5",
+      "avatarUrl": ""
+    },
+    {
+      "id": "18",
+      "name": "Carolina Rocha",
+      "role": "Account Executive",
+      "team": "Marketing",
+      "managerId": "6",
+      "avatarUrl": ""
+    },
+    {
+      "id": "19",
+      "name": "Natalia Mendes",
+      "role": "UX Designer",
+      "team": "Core Engineering",
+      "managerId": "6",
+      "avatarUrl": ""
+    },
+    {
+      "id": "20",
+      "name": "Mateus Gomes",
+      "role": "Financial Analyst",
+      "team": "Security",
+      "managerId": "6",
+      "avatarUrl": ""
+    },
+    {
+      "id": "21",
+      "name": "Mateus Santos",
+      "role": "Operations Specialist",
+      "team": "Data Science",
+      "managerId": "6",
+      "avatarUrl": ""
+    },
+    {
+      "id": "22",
+      "name": "Amanda Rocha",
+      "role": "Recruiter",
+      "team": "Product",
+      "managerId": "7",
+      "avatarUrl": ""
+    },
+    {
+      "id": "23",
+      "name": "Juliana Moreira",
+      "role": "Product Manager",
+      "team": "Operations",
+      "managerId": "7",
+      "avatarUrl": ""
+    },
+    {
+      "id": "24",
+      "name": "Mateus Mendes",
+      "role": "Financial Analyst",
+      "team": "Sales",
+      "managerId": "7",
+      "avatarUrl": ""
+    },
+    {
+      "id": "25",
+      "name": "Luiza Gomes",
+      "role": "Product Manager",
+      "team": "Operations",
+      "managerId": "7",
+      "avatarUrl": ""
+    },
+    {
+      "id": "26",
+      "name": "Camila Santos",
+      "role": "UX Designer",
+      "team": "Security",
+      "managerId": "8",
+      "avatarUrl": ""
+    },
+    {
+      "id": "27",
+      "name": "Camila Santos",
+      "role": "Financial Analyst",
+      "team": "Marketing",
+      "managerId": "8",
+      "avatarUrl": ""
+    },
+    {
+      "id": "28",
+      "name": "Rafael Santos",
+      "role": "Financial Analyst",
+      "team": "Operations",
+      "managerId": "8",
+      "avatarUrl": ""
+    },
+    {
+      "id": "29",
+      "name": "Luiza Silva",
+      "role": "Financial Analyst",
+      "team": "Design",
+      "managerId": "8",
+      "avatarUrl": ""
+    },
+    {
+      "id": "30",
+      "name": "Julia Oliveira",
+      "role": "Recruiter",
+      "team": "Design",
+      "managerId": "9",
+      "avatarUrl": ""
+    },
+    {
+      "id": "31",
+      "name": "Roberto Rocha",
+      "role": "Financial Analyst",
+      "team": "Operations",
+      "managerId": "9",
+      "avatarUrl": ""
+    },
+    {
+      "id": "32",
+      "name": "Bruno Lima",
+      "role": "Recruiter",
+      "team": "Security",
+      "managerId": "9",
+      "avatarUrl": ""
+    },
+    {
+      "id": "33",
+      "name": "Juliana Souza",
+      "role": "UX Designer",
+      "team": "Design",
+      "managerId": "9",
+      "avatarUrl": ""
+    },
+    {
+      "id": "34",
+      "name": "Natalia Almeida",
+      "role": "Operations Specialist",
+      "team": "Data Science",
+      "managerId": "10",
+      "avatarUrl": ""
+    },
+    {
+      "id": "35",
+      "name": "Luiza Lima",
+      "role": "Account Executive",
+      "team": "Sales",
+      "managerId": "10",
+      "avatarUrl": ""
+    },
+    {
+      "id": "36",
+      "name": "Natalia Almeida",
+      "role": "Product Manager",
+      "team": "Core Engineering",
+      "managerId": "10",
+      "avatarUrl": ""
+    },
+    {
+      "id": "37",
+      "name": "Marcos Mendes",
+      "role": "Product Manager",
+      "team": "Marketing",
+      "managerId": "10",
+      "avatarUrl": ""
+    },
+    {
+      "id": "38",
+      "name": "Bruno Gomes",
+      "role": "Product Manager",
+      "team": "Operations",
+      "managerId": "11",
+      "avatarUrl": ""
+    },
+    {
+      "id": "39",
+      "name": "Lucas Souza",
+      "role": "Financial Analyst",
+      "team": "Core Engineering",
+      "managerId": "11",
+      "avatarUrl": ""
+    },
+    {
+      "id": "40",
+      "name": "Amanda Mendes",
+      "role": "Product Manager",
+      "team": "Product",
+      "managerId": "11",
+      "avatarUrl": ""
+    },
+    {
+      "id": "41",
+      "name": "Rafael Rocha",
+      "role": "Product Manager",
+      "team": "Finance",
+      "managerId": "11",
+      "avatarUrl": ""
+    },
+    {
+      "id": "42",
+      "name": "Bruno Gomes",
+      "role": "Recruiter",
+      "team": "Data Science",
+      "managerId": "12",
+      "avatarUrl": ""
+    },
+    {
+      "id": "43",
+      "name": "Beatriz Costa",
+      "role": "Software Engineer",
+      "team": "Finance",
+      "managerId": "12",
+      "avatarUrl": ""
+    },
+    {
+      "id": "44",
+      "name": "Amanda Farias",
+      "role": "Account Executive",
+      "team": "Operations",
+      "managerId": "12",
+      "avatarUrl": ""
+    },
+    {
+      "id": "45",
+      "name": "Roberto Souza",
+      "role": "Operations Specialist",
+      "team": "HR",
+      "managerId": "12",
+      "avatarUrl": ""
+    },
+    {
+      "id": "46",
+      "name": "Camila Pereira",
+      "role": "Product Manager",
+      "team": "Marketing",
+      "managerId": "13",
+      "avatarUrl": ""
+    },
+    {
+      "id": "47",
+      "name": "Diego Rocha",
+      "role": "Financial Analyst",
+      "team": "HR",
+      "managerId": "13",
+      "avatarUrl": ""
+    },
+    {
+      "id": "48",
+      "name": "Natalia Souza",
+      "role": "Product Manager",
+      "team": "Security",
+      "managerId": "13",
+      "avatarUrl": ""
+    },
+    {
+      "id": "49",
+      "name": "Larissa Lima",
+      "role": "Financial Analyst",
+      "team": "Marketing",
+      "managerId": "13",
+      "avatarUrl": ""
+    },
+    {
+      "id": "50",
+      "name": "Felipe Silva",
+      "role": "Software Engineer",
+      "team": "HR",
+      "managerId": "14",
+      "avatarUrl": ""
+    },
+    {
+      "id": "51",
+      "name": "Ana Santos",
+      "role": "Account Executive",
+      "team": "Design",
+      "managerId": "14",
+      "avatarUrl": ""
+    },
+    {
+      "id": "52",
+      "name": "Amanda Costa",
+      "role": "Software Engineer",
+      "team": "HR",
+      "managerId": "14",
+      "avatarUrl": ""
+    },
+    {
+      "id": "53",
+      "name": "Camila Lima",
+      "role": "Security Engineer",
+      "team": "Sales",
+      "managerId": "14",
+      "avatarUrl": ""
+    },
+    {
+      "id": "54",
+      "name": "Juliana Souza",
+      "role": "Software Engineer",
+      "team": "Operations",
+      "managerId": "15",
+      "avatarUrl": ""
+    },
+    {
+      "id": "55",
+      "name": "Lucas Pereira",
+      "role": "Recruiter",
+      "team": "Security",
+      "managerId": "15",
+      "avatarUrl": ""
+    },
+    {
+      "id": "56",
+      "name": "Larissa Pereira",
+      "role": "Account Executive",
+      "team": "Sales",
+      "managerId": "15",
+      "avatarUrl": ""
+    },
+    {
+      "id": "57",
+      "name": "Lucas Santos",
+      "role": "Operations Specialist",
+      "team": "Product",
+      "managerId": "15",
+      "avatarUrl": ""
+    },
+    {
+      "id": "58",
+      "name": "Gabriel Silva",
+      "role": "Product Manager",
+      "team": "Sales",
+      "managerId": "16",
+      "avatarUrl": ""
+    },
+    {
+      "id": "59",
+      "name": "Juliana Santos",
+      "role": "Account Executive",
+      "team": "Operations",
+      "managerId": "16",
+      "avatarUrl": ""
+    },
+    {
+      "id": "60",
+      "name": "Fernanda Carvalho",
+      "role": "Operations Specialist",
+      "team": "Operations",
+      "managerId": "16",
+      "avatarUrl": ""
+    },
+    {
+      "id": "61",
+      "name": "Lucas Rocha",
+      "role": "Recruiter",
+      "team": "HR",
+      "managerId": "16",
+      "avatarUrl": ""
+    },
+    {
+      "id": "62",
+      "name": "Rodrigo Souza",
+      "role": "Software Engineer",
+      "team": "Finance",
+      "managerId": "17",
+      "avatarUrl": ""
+    },
+    {
+      "id": "63",
+      "name": "Camila Santos",
+      "role": "Data Analyst",
+      "team": "Data Science",
+      "managerId": "17",
+      "avatarUrl": ""
+    },
+    {
+      "id": "64",
+      "name": "Roberto Oliveira",
+      "role": "Operations Specialist",
+      "team": "Marketing",
+      "managerId": "17",
+      "avatarUrl": ""
+    },
+    {
+      "id": "65",
+      "name": "Lucas Silva",
+      "role": "Security Engineer",
+      "team": "Security",
+      "managerId": "17",
+      "avatarUrl": ""
+    }
+  ]
+}

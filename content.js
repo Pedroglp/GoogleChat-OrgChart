@@ -12,7 +12,9 @@ const CONFIG = {
   },
   // Data State
   data: [],
-  dataMap: new Map() // ID -> Employee
+  dataMap: new Map(), // ID -> Employee
+  lastUpdated: '',
+  expandedNodes: new Set()
 };
 
 let overlayElement = null;
@@ -25,7 +27,15 @@ async function fetchOrgData() {
   try {
     const url = chrome.runtime.getURL('org-data.json');
     const response = await fetch(url);
-    CONFIG.data = await response.json();
+    const result = await response.json();
+    
+    if (Array.isArray(result)) {
+      CONFIG.data = result;
+    } else {
+      CONFIG.data = result.employees || [];
+      CONFIG.lastUpdated = result.lastUpdated || '';
+    }
+    
     CONFIG.data.forEach(emp => CONFIG.dataMap.set(emp.id, emp));
     console.log(`[Org Chart] Data loaded successfully. ${CONFIG.data.length} employees found.`);
   } catch (error) {
@@ -38,7 +48,7 @@ async function fetchOrgData() {
  */
 function getManagerPath(employeeId) {
   const employee = CONFIG.dataMap.get(employeeId);
-  if (!employee || !employee.managerId) return 'None';
+  if (!employee || !employee.managerId || employee.managerId === 'null') return 'None';
   
   const manager = CONFIG.dataMap.get(employee.managerId);
   if (!manager) return 'Unknown';
@@ -59,15 +69,26 @@ function createOverlay() {
   const header = document.createElement('div');
   header.className = 'gchat-org-header';
   
+  const titleContainer = document.createElement('div');
   const title = document.createElement('h2');
   title.innerText = 'Organizational Chart';
+  titleContainer.appendChild(title);
+  
+  if (CONFIG.lastUpdated) {
+    const subtitle = document.createElement('p');
+    subtitle.style.margin = '4px 0 0 0';
+    subtitle.style.fontSize = '12px';
+    subtitle.style.color = 'var(--gchat-org-text-secondary)';
+    subtitle.innerText = `Last updated: ${CONFIG.lastUpdated}`;
+    titleContainer.appendChild(subtitle);
+  }
   
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.className = 'gchat-org-search';
   searchInput.placeholder = 'Search by Name, Role, or Team...';
   
-  header.appendChild(title);
+  header.appendChild(titleContainer);
   header.appendChild(searchInput);
   
   // Content grid
@@ -79,18 +100,25 @@ function createOverlay() {
   
   document.body.appendChild(overlayElement);
   
-  // Initial render
-  renderCards(CONFIG.data, content);
+  // Initial render (Tree View)
+  renderTree(null, 0, content);
   
   // Real-time Search event listener
   searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value.toLowerCase().trim();
+    content.innerHTML = '';
+    
+    if (!query) {
+      renderTree(null, 0, content);
+      return;
+    }
+    
     const filtered = CONFIG.data.filter(emp => 
       emp.name.toLowerCase().includes(query) ||
       emp.role.toLowerCase().includes(query) ||
       emp.team.toLowerCase().includes(query)
     );
-    renderCards(filtered, content);
+    renderCardsFlat(filtered, content);
   });
 }
 
@@ -99,10 +127,8 @@ function createOverlay() {
  */
 function getGoogleAvatarFallback(name) {
   const initial = name ? name.charAt(0).toUpperCase() : '?';
-  // Standard Material 500 colors used by Google for avatars
   const colors = ['#e53935', '#d81b60', '#8e24aa', '#5e35b1', '#3949ab', '#1e88e5', '#039be5', '#00acc1', '#00897b', '#43a047', '#7cb342', '#f4511e', '#6d4c41'];
   
-  // Create a consistent hash from the name so the user always gets the same color
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -116,40 +142,89 @@ function getGoogleAvatarFallback(name) {
 }
 
 /**
- * Render the employee cards in the given container.
+ * Recursively render the hierarchy tree.
  */
-function renderCards(employees, container) {
-  container.innerHTML = '';
+function renderTree(parentId, depth, container) {
+  // Loose equality to catch null or undefined
+  const children = CONFIG.data.filter(emp => emp.managerId == parentId || (parentId === null && emp.managerId === 'null'));
   
+  children.forEach(emp => {
+    const card = buildCardElement(emp, depth, true);
+    container.appendChild(card);
+    
+    if (CONFIG.expandedNodes.has(emp.id)) {
+      renderTree(emp.id, depth + 1, container);
+    }
+  });
+}
+
+/**
+ * Render a flat list of cards (used for search results).
+ */
+function renderCardsFlat(employees, container) {
   if (employees.length === 0) {
-    container.innerHTML = '<p style="color: var(--gchat-org-text-secondary); grid-column: 1 / -1;">No collaborators found.</p>';
+    container.innerHTML = '<p style="color: var(--gchat-org-text-secondary); padding: 16px;">No collaborators found.</p>';
     return;
   }
-  
   employees.forEach(emp => {
-    const card = document.createElement('div');
-    card.className = 'gchat-org-card';
-    
-    const managerName = getManagerPath(emp.id);
-    const fallbackSrc = getGoogleAvatarFallback(emp.name);
-    
-    // Create card HTML structure
-    card.innerHTML = `
-      <div class="gchat-org-card-header">
-        <img src="${emp.avatarUrl || fallbackSrc}" alt="${emp.name}" class="gchat-org-avatar" onerror="this.onerror=null; this.src='${fallbackSrc}'"/>
-        <div class="gchat-org-info">
-          <h3 class="gchat-org-name">${emp.name}</h3>
-          <p class="gchat-org-role">${emp.role}</p>
-        </div>
-      </div>
-      <div class="gchat-org-team">${emp.team}</div>
-      <div class="gchat-org-manager">
-        Reporting manager: <span class="gchat-org-manager-name">${managerName}</span>
-      </div>
-    `;
-    
-    container.appendChild(card);
+    container.appendChild(buildCardElement(emp, 0, false));
   });
+}
+
+/**
+ * Builds a single employee card element.
+ */
+function buildCardElement(emp, depth, isTreeMode) {
+  const card = document.createElement('div');
+  card.className = 'gchat-org-card';
+  
+  if (isTreeMode && depth > 0) {
+    card.style.marginLeft = (depth * 32) + 'px';
+  }
+  
+  const managerName = getManagerPath(emp.id);
+  const fallbackSrc = getGoogleAvatarFallback(emp.name);
+  
+  const hasChildren = CONFIG.data.some(e => e.managerId == emp.id);
+  const isExpanded = CONFIG.expandedNodes.has(emp.id);
+  
+  let toggleHtml = '';
+  if (isTreeMode && hasChildren) {
+    const iconSvg = isExpanded 
+      ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>` // Arrow Drop Down
+      : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 17l5-5-5-5v10z"/></svg>`; // Arrow Right
+    toggleHtml = `<div class="gchat-org-toggle">${iconSvg}</div>`;
+  }
+  
+  card.innerHTML = `
+    ${toggleHtml}
+    <div class="gchat-org-card-header">
+      <img src="${emp.avatarUrl || fallbackSrc}" alt="${emp.name}" class="gchat-org-avatar" onerror="this.onerror=null; this.src='${fallbackSrc}'"/>
+      <div class="gchat-org-info">
+        <h3 class="gchat-org-name">${emp.name}</h3>
+        <p class="gchat-org-role">${emp.role}</p>
+      </div>
+    </div>
+    <div class="gchat-org-team">${emp.team}</div>
+    <div class="gchat-org-manager">
+      Reporting manager: <span class="gchat-org-manager-name">${managerName}</span>
+    </div>
+  `;
+  
+  if (isTreeMode && hasChildren) {
+    card.addEventListener('click', () => {
+      if (isExpanded) {
+        CONFIG.expandedNodes.delete(emp.id);
+      } else {
+        CONFIG.expandedNodes.add(emp.id);
+      }
+      const container = document.querySelector('.gchat-org-content');
+      container.innerHTML = '';
+      renderTree(null, 0, container);
+    });
+  }
+  
+  return card;
 }
 
 /**
