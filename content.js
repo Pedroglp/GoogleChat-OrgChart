@@ -118,7 +118,7 @@ function createOverlay() {
     // Fade out current tree
     const currentTree = content.querySelector('.gchat-tree-wrapper, .gchat-flat-list');
     if (currentTree) {
-      currentTree.style.animation = 'treeFadeOut 0.2s ease-in forwards';
+      currentTree.style.animation = 'treeFadeOut 0.3s ease-out forwards';
     }
     
     clearTimeout(searchTimeout);
@@ -155,7 +155,7 @@ function createOverlay() {
       }
       
       renderTree(null, 0, content);
-    }, 180); // Wait for fade out to finish
+    }, 280); // Wait for fade out to finish
   });
 }
 
@@ -315,19 +315,19 @@ function buildCardElement(emp, isTreeMode, depth = 0) {
           lis.forEach((liItem, index) => {
             // Right to left: last item has 0 delay, first item has max delay
             const delay = (lis.length - 1 - index) * 0.08;
-            liItem.style.animation = `treeFadeOut 0.2s ease-in forwards`;
+            liItem.style.animation = `treeFadeOut 0.3s ease-out forwards`;
             liItem.style.animationDelay = `${delay}s`;
           });
           
           // Fade out the ul itself (to fade out the top connecting line) synchronized with the last card
-          ul.style.animation = `treeFadeOut 0.2s ease-in forwards`;
+          ul.style.animation = `treeFadeOut 0.3s ease-out forwards`;
           ul.style.animationDelay = `${maxDelay}s`;
           
           setTimeout(() => {
             CONFIG.expandedNodes.delete(emp.id);
             ul.remove();
             updateToggleIcon(card, false);
-          }, (maxDelay + 0.2) * 1000);
+          }, (maxDelay + 0.3) * 1000);
         } else {
           CONFIG.expandedNodes.delete(emp.id);
           updateToggleIcon(card, false);
