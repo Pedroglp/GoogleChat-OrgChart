@@ -210,8 +210,8 @@ function buildCardElement(emp, isTreeMode) {
   let toggleHtml = '';
   if (isTreeMode && hasChildren) {
     const iconSvg = isExpanded 
-      ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>` // Arrow Drop Down
-      : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 17l5-5-5-5v10z"/></svg>`; // Arrow Right
+      ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>` // Arrow Drop Up (Collapse)
+      : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>`; // Arrow Drop Down (Expand)
     toggleHtml = `<div class="gchat-org-toggle">${iconSvg}</div>`;
   }
   
